@@ -8,8 +8,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // read 'auth' cookie (set by client on successful login)
-  const token = request.cookies.get("auth")?.value;
+  // read 'token' cookie (set by client on successful login)
+  const token = request.cookies.get("token")?.value;
 
   // if user goes to the login page but is already authenticated -> send to /dashboard/report
   if (pathname === "/auth/login" && token) {

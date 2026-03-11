@@ -9,11 +9,11 @@ export async function POST(req: Request) {
     }
 
     // TODO: replace with real auth (DB lookup / verify password / issue JWT or session id)
-    if (email !== "test@example.com" || password !== "password123") {
+    if (email !== "ravi@gmail.com" || password !== "password123") {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
-    const token = "fake-token-" + Date.now();
+    const token = Date.now();
     const maxAge = 60 * 60 * 24 * 7; // 7 days
 
     const res = NextResponse.json({ ok: true });

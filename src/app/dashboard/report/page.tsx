@@ -151,9 +151,13 @@ export default function PathologyReport() {
         window.location.reload()
     }
 
-    const handleLogOut = () => {
-        // clear the simple client cookie to "log out"
-        document.cookie = "auth=; path=/; max-age=0";
+    const handleLogOut = async () => {
+        // call server route to clear the HttpOnly token cookie
+        try {
+            await fetch("/api/auth/logout", { method: "POST" });
+        } catch {
+            // ignore network errors, proceed to redirect
+        }
         // navigate back to home page after logout
         window.location.href = "/";
     }
@@ -261,11 +265,10 @@ export default function PathologyReport() {
                                         disabled={true}
                                     />
                                     <input
-                                        className={`col-span-2 rounded-md border px-2 py-1 ${
-                                            errors[t.id]
-                                                ? "border-red-500"
-                                                : "border-zinc-900"
-                                        }`}
+                                        className={`col-span-2 rounded-md border px-2 py-1 ${errors[t.id]
+                                            ? "border-red-500"
+                                            : "border-zinc-900"
+                                            }`}
                                         placeholder="Result"
                                         value={t.result}
                                         type="text"
