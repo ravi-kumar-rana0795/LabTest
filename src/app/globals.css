@@ -18,6 +18,14 @@
     --foreground: #ededed;
   }
 }
+@media print {
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+}
 
 body {
   background: var(--background);
