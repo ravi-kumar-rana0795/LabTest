@@ -12,7 +12,7 @@ function createWindow() {
     }
   })
 
-  mainWindow.loadURL("http://localhost:3000")
+  mainWindow.loadURL("https://lab-test-six.vercel.app/")
 }
 
 app.whenReady().then(createWindow)

@@ -35,14 +35,23 @@ export default function Login() {
 
     setLoading(true);
     try {
-      // Replace this with real auth call (fetch /api/login or NextAuth)
-      await new Promise((r) => setTimeout(r, 800));
-      setSuccess("Logged in (fake). Replace with real authentication.");
-       router.push("/dashboard/report");
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.message || "Login failed");
+      }
+
+      setSuccess("Logged in.");
+      router.push("/dashboard/report");
       setEmail("");
       setPassword("");
-    } catch (err) {
-      setError("Login failed. Try again.");
+    } catch (err: any) {
+      setError(err.message || "Login failed. Try again.");
     } finally {
       setLoading(false);
     }
