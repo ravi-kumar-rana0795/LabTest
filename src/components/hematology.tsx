@@ -31,7 +31,7 @@ export default function HematologyTable( {record}: {record: TestItem[]} ) :any  
             }
 
             return (
-              <tr key={index} className="">
+              <tr key={index}>
 
                 <td className="py-1">{row.test}</td>
 

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
-import HematologyTable from "./hematology";
-import LabSignature from "./labsignature";
+import HematologyTable from "../../../components/hematology";
+import LabSignature from "../../../components/labsignature";
 import PrintButton from "@/components/Print";
 import { RecordType } from "@/constants/types";
 

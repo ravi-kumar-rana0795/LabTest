@@ -1,6 +1,6 @@
 import { RecordType } from "@/constants/types";
-import HematologyTable from "../app/dashboard/submit/hematology";
-import LabSignature from "../app/dashboard/submit/labsignature";
+import HematologyTable from "./hematology";
+import LabSignature from "./labsignature";
 
 
 export default function Report({record}: {record: RecordType}): any {

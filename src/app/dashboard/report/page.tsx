@@ -264,7 +264,7 @@ export default function PathologyReport() {
                                         className={`col-span-2 rounded-md border px-2 py-1 ${
                                             errors[t.id]
                                                 ? "border-red-500"
-                                                : "border-zinc-200"
+                                                : "border-zinc-900"
                                         }`}
                                         placeholder="Result"
                                         value={t.result}
