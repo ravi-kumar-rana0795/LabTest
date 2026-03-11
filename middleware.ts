@@ -11,9 +11,9 @@ export function middleware(request: NextRequest) {
   // read 'auth' cookie (set by client on successful login)
   const token = request.cookies.get("auth")?.value;
 
-  // if user goes to the login page but is already authenticated -> send to /home
+  // if user goes to the login page but is already authenticated -> send to /dashboard/report
   if (pathname === "/auth/login" && token) {
-    return NextResponse.redirect(new URL("/home", request.url));
+    return NextResponse.redirect(new URL("/dashboard/report", request.url));
   }
 
   // protected routes - add more prefixes you want protected
