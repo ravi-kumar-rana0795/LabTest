@@ -31,6 +31,9 @@ export default function PathologyReport() {
     // per-row validation messages keyed by test id
     const [errors, setErrors] = useState<Record<number, string>>({});
 
+    // validation messages for patient/report fields
+    const [patientErrors, setPatientErrors] = useState<Record<string, string>>({});
+
     useEffect(() => {
         const raw = localStorage.getItem("lab_records");
         if (raw) {
@@ -100,6 +103,23 @@ export default function PathologyReport() {
     const handleSave = (e?: React.FormEvent) => {
         e?.preventDefault();
 
+         // validate patient/report details
+        const newPatientErrors: Record<string, string> = {};
+        if (!patientName.trim()) newPatientErrors.patientName = "Patient name is required.";
+        const ageSexTrim = ageSex.trim();
+        if (!ageSexTrim) {
+            newPatientErrors.ageSex = "Age & sex is required (e.g. 34 M).";
+        } else if (!/^\s*\d+\s*[-\/]?\s*(M|F|m|f)\s*$/.test(ageSexTrim)) {
+            newPatientErrors.ageSex = "Use format like: 34 M";
+        }
+        if (!reportingTime || isNaN(new Date(reportingTime).getTime())) {
+            newPatientErrors.reportingTime = "Reporting time is required and must be valid.";
+        }
+        if (!labRefNo.trim()) newPatientErrors.labRefNo = "Lab Ref No is required.";
+        if (!patientId.trim()) newPatientErrors.patientId = "Patient Id is required.";
+
+        setPatientErrors(newPatientErrors);
+
         // ensure all results are present and no validation errors
         const newErrors: Record<number, string> = {};
         tests.forEach((t) => {
@@ -114,8 +134,10 @@ export default function PathologyReport() {
         // merge with existing errors and abort if any message exists
         const merged = { ...errors, ...newErrors };
         setErrors(merged);
-        const hasError = Object.values(merged).some((m) => m && m.length > 0);
-        if (hasError) {
+        
+        const hasTestError = Object.values(merged).some((m) => m && m.length > 0);
+        const hasPatientError = Object.values(newPatientErrors).some((m) => m && m.length > 0);
+        if (hasTestError || hasPatientError) {
             alert("Fix validation errors before saving.");
             return;
         }
@@ -134,6 +156,7 @@ export default function PathologyReport() {
         };
 
         persistRecord(record);
+        alert("Record saved");
     };
 
 
@@ -189,17 +212,29 @@ export default function PathologyReport() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-zinc-700">Name</label>
-                            <input value={patientName} placeholder="Enter patient name" onChange={(e) => setPatientName(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            <input value={patientName} placeholder="Enter patient name" onChange={(e) => {
+                                    setPatientName(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.patientName; return n; });
+                                }} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            {patientErrors.patientName && <p className="mt-1 text-sm text-red-600">{patientErrors.patientName}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-zinc-700">Age & Sex</label>
-                            <input value={ageSex} placeholder="Enter age and sex" onChange={(e) => setAgeSex(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            <input value={ageSex} placeholder="Enter age and sex" onChange={(e) => {
+                                    setAgeSex(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.ageSex; return n; });
+                                }} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            {patientErrors.ageSex && <p className="mt-1 text-sm text-red-600">{patientErrors.ageSex}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-zinc-700">Referred by</label>
-                            <input value={referredBy} placeholder="Enter referred by" onChange={(e) => setReferredBy(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            <input value={referredBy} placeholder="Enter referred by" onChange={(e) => {
+                                    setReferredBy(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.referredBy; return n; });
+                                }} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            {patientErrors.referredBy && <p className="mt-1 text-sm text-red-600">{patientErrors.referredBy}</p>}
                         </div>
 
                         <div>
@@ -208,19 +243,31 @@ export default function PathologyReport() {
                             <input
                                 type="datetime-local"
                                 value={reportingTime}
-                                onChange={(e) => setReportingTime(e.target.value)}
+                                onChange={(e) => {
+                                    setReportingTime(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.reportingTime; return n; });
+                                }}
                                 className="mt-1 block w-full rounded-md border px-3 py-2"
                             />
+                            {patientErrors.reportingTime && <p className="mt-1 text-sm text-red-600">{patientErrors.reportingTime}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-zinc-700">Lab Ref No</label>
-                            <input value={labRefNo} placeholder="Enter lab ref no" onChange={(e) => setLabRefNo(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            <input value={labRefNo} placeholder="Enter lab ref no"  onChange={(e) => {
+                                    setLabRefNo(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.labRefNo; return n; });
+                                }} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            {patientErrors.labRefNo && <p className="mt-1 text-sm text-red-600">{patientErrors.labRefNo}</p>}
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-zinc-700">Patient Id</label>
-                            <input value={patientId} placeholder="Enter patient id" onChange={(e) => setPatientId(e.target.value)} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            <input value={patientId} placeholder="Enter patient id" onChange={(e) => {
+                                    setPatientId(e.target.value);
+                                    setPatientErrors((p) => { const n = { ...p }; delete n.patientId; return n; });
+                                }} className="mt-1 block w-full rounded-md border px-3 py-2" />
+                            {patientErrors.patientId && <p className="mt-1 text-sm text-red-600">{patientErrors.patientId}</p>}
                         </div>
                     </div>
 
